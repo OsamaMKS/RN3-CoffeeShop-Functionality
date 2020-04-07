@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import NumericInput from "react-native-numeric-input";
+import { connect } from "react-redux";
+import { addItem, removeItem } from "../../redux/actions";
 
 // NativeBase Components
 import {
@@ -24,6 +26,17 @@ class CoffeeDetail extends Component {
     drink: "",
     option: "",
     quantity: 1,
+  };
+
+  Add = () => {
+    let newItem = {
+      drink: this.state.drink,
+      option: this.state.option,
+      quantity: this.state.quantity,
+    };
+    console.log(newItem);
+
+    this.props.add(newItem);
   };
 
   render() {
@@ -77,14 +90,14 @@ class CoffeeDetail extends Component {
             <CardItem>
               <Body style={styles.numericInput}>
                 <NumericInput
-                  value={this.state.value}
+                  value={this.state.quantity}
                   onChange={(quantity) => this.setState({ quantity })}
-                  initValue={1}
+                  initValue={this.state.quantity}
                 />
               </Body>
 
               <Right>
-                <Button full style={styles.addButton}>
+                <Button full style={styles.addButton} onPress={this.Add}>
                   <Text>Add</Text>
                 </Button>
               </Right>
@@ -95,5 +108,13 @@ class CoffeeDetail extends Component {
     );
   }
 }
+const mapStateToProps = (state) => ({
+  items: state.cartReducer,
+});
+const mapDispatchToProps = (dispatch) => {
+  return {
+    add: (newItem) => dispatch(addItem(newItem)),
+  };
+};
 
-export default CoffeeDetail;
+export default connect(mapStateToProps, mapDispatchToProps)(CoffeeDetail);
